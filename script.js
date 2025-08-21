@@ -1,9 +1,10 @@
+let playerName = null;
+
 const BACKEND_URL = "https://game1-3i6i.onrender.com";
 fetch(`${BACKEND_URL}/api/check-name?name=${username}`)
   .then(res => res.json())
   .then(data => console.log(data))
   .catch(err => console.error(err));
-let playerName = null;
 
 // --- check if name exists on server ---
 async function isNameTaken(name) {
