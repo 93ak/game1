@@ -1,12 +1,6 @@
-let playerName = localStorage.getItem("playerName") || null;
+let playerName = null;
 
 const BACKEND_URL = "https://game1-3i6i.onrender.com";
-
-if (playerName) {
-  nameScreen.style.display = "none";
-  canvas.style.display = "block";
-  startGame();
-}
 
 // --- check if name exists on server ---
 async function isNameTaken(name) {
