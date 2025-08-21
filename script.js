@@ -1,17 +1,6 @@
+let playerName = localStorage.getItem("playerName") || null;
 
 const BACKEND_URL = "https://game1-3i6i.onrender.com";
-
-// --- DOM references ---
-const nameScreen = document.getElementById("nameScreen");
-const canvas = document.getElementById("myCanvas");
-const leaderboardDiv = document.getElementById("leaderboard");
-const startBtn = document.getElementById("startGameBtn");
-const nameInput = document.getElementById("playerName");
-const nameError = document.getElementById("nameError");
-const scoresList = document.getElementById("scoresList");
-const personalBestDiv = document.getElementById("personalBest");
-
-let playerName = localStorage.getItem("playerName") || null;
 
 if (playerName) {
   nameScreen.style.display = "none";
