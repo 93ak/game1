@@ -1,10 +1,6 @@
 let playerName = null;
 
 const BACKEND_URL = "https://game1-3i6i.onrender.com";
-fetch(`${BACKEND_URL}/api/check-name?name=${username}`)
-  .then(res => res.json())
-  .then(data => console.log(data))
-  .catch(err => console.error(err));
 
 // --- check if name exists on server ---
 async function isNameTaken(name) {
@@ -14,7 +10,7 @@ async function isNameTaken(name) {
 }
 // --- submit score to server ---
 async function submitScore(name, score) {
-  await fetch("${BACKEND_URL}/api/submit-score", {
+  await fetch(`${BACKEND_URL}/api/submit-score`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, score }),
@@ -23,7 +19,7 @@ async function submitScore(name, score) {
 
 // --- get top 10 leaderboard from server ---
 async function getLeaderboard() {
-  const res = await fetch("${BACKEND_URL}/api/leaderboard");
+  const res = await fetch(`${BACKEND_URL}/api/leaderboard`);
   return await res.json();
 }
 
@@ -346,14 +342,14 @@ async function showLeaderboard(finalScore) {
 
   try {
     // Send player's score to server
-    await fetch('${BACKEND_URL}/api/submit-score', {
+    await fetch(`${BACKEND_URL}/api/submit-score`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: playerName, score: finalScore })
     });
 
     // Fetch top scores
-    const res = await fetch('${BACKEND_URL}/api/leaderboard');
+    const res = await fetch(`${BACKEND_URL}/api/leaderboard`);
     const leaderboard = await res.json();
 
     const scoresList = document.getElementById("scoresList");
