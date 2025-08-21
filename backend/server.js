@@ -74,7 +74,7 @@ app.get("/api/leaderboard", async (req, res) => {
   const topScores = await leaderboardCollection
     .find({})
     .sort({ score: -1 })
-    .limit(10)
+    .limit(30)
     .toArray();
   res.json(topScores);
 });
