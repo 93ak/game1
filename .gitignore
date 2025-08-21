@@ -1,0 +1,5 @@
+# Hide environment variables
+.env
+
+# Node modules (so you don’t push all packages)
+node_modules/

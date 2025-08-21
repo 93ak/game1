@@ -1,46 +1,86 @@
 let playerName = null;
 
-// Mock function (replace with backend fetch later)
+// --- check if name exists on server ---
 async function isNameTaken(name) {
-  const takenNames = ["Alice", "Bob", "Charlie"]; // placeholder
-  return takenNames.includes(name);
+  const res = await fetch(`/api/check-name?name=${encodeURIComponent(name)}`);
+  const data = await res.json();
+  return data.taken;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const nameScreen = document.getElementById("nameScreen");
-  const canvas = document.getElementById("myCanvas");
-  const leaderboard = document.getElementById("leaderboard");
-  const startBtn = document.getElementById("startGameBtn");
-  const nameInput = document.getElementById("playerName");
-  const nameError = document.getElementById("nameError");
-
-  startBtn.addEventListener("click", async () => {
-    const name = nameInput.value.trim();
-
-    if (!name) {
-      nameError.textContent = "Please enter a name.";
-      nameError.style.display = "block";
-      return;
-    }
-
-    const taken = await isNameTaken(name);
-    if (taken) {
-      nameError.textContent = "Name already taken. Try another.";
-      nameError.style.display = "block";
-      return;
-    }
-
-    // ✅ Name is good
-    playerName = name;
-    nameError.style.display = "none";
-
-    // Hide name screen, show game
-    nameScreen.style.display = "none";
-    canvas.style.display = "block";
-
-    startGame();
+// --- submit score to server ---
+async function submitScore(name, score) {
+  await fetch("/api/submit-score", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, score }),
   });
+}
+
+// --- get top 10 leaderboard from server ---
+async function getLeaderboard() {
+  const res = await fetch("/api/leaderboard");
+  return await res.json();
+}
+
+// --- DOM references ---
+const nameScreen = document.getElementById("nameScreen");
+const canvas = document.getElementById("myCanvas");
+const leaderboardDiv = document.getElementById("leaderboard");
+const startBtn = document.getElementById("startGameBtn");
+const nameInput = document.getElementById("playerName");
+const nameError = document.getElementById("nameError");
+const scoresList = document.getElementById("scoresList");
+const personalBestDiv = document.getElementById("personalBest");
+
+// --- start game button ---
+startBtn.addEventListener("click", async () => {
+  const name = nameInput.value.trim();
+  if (!name) {
+    nameError.textContent = "Please enter a name.";
+    nameError.style.display = "block";
+    return;
+  }
+
+  const taken = await isNameTaken(name);
+  if (taken) {
+    nameError.textContent = "Name already taken. Try another.";
+    nameError.style.display = "block";
+    return;
+  }
+
+  playerName = name;
+  nameError.style.display = "none";
+  nameScreen.style.display = "none";
+  canvas.style.display = "block";
+
+  startGame();
 });
+
+// --- show leaderboard after death ---
+async function showLeaderboard(finalScore) {
+  if (!playerName) return;
+
+  await submitScore(playerName, finalScore);
+  const leaderboard = await getLeaderboard();
+
+  leaderboardDiv.style.display = "block";
+  scoresList.innerHTML = "";
+
+  leaderboard.forEach((entry, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+    if (entry.name === playerName && entry.score === finalScore) {
+      li.style.fontWeight = "bold";
+      li.style.color = "blue";
+    }
+    scoresList.appendChild(li);
+  });
+
+  const myScore = leaderboard.find((e) => e.name === playerName);
+  if (myScore) {
+    personalBestDiv.textContent = `⭐ ${myScore.name}: ${myScore.score}`;
+  }
+}
 
 function startGame() {
   console.log("Starting game for:", playerName);
@@ -295,30 +335,37 @@ function startGame() {
 }
 
 // 🎯 Leaderboard function (currently local mock, later backend)
-function showLeaderboard(finalScore) {
+async function showLeaderboard(finalScore) {
   const leaderboardDiv = document.getElementById("leaderboard");
   leaderboardDiv.style.display = "block";
 
-  let leaderboard = [
-    { name: "Alice", score: 42 },
-    { name: "Bob", score: 37 },
-    { name: "Charlie", score: 33 }
-  ];
+  try {
+    // Send player's score to server
+    await fetch('/api/submit-score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: playerName, score: finalScore })
+    });
 
-  leaderboard.push({ name: playerName, score: finalScore });
-  leaderboard.sort((a, b) => b.score - a.score);
-  leaderboard = leaderboard.slice(0, 10);
+    // Fetch top scores
+    const res = await fetch('/api/leaderboard');
+    const leaderboard = await res.json();
 
-  const scoresList = document.getElementById("scoresList");
-  scoresList.innerHTML = "";
+    const scoresList = document.getElementById("scoresList");
+    scoresList.innerHTML = "";
 
-  leaderboard.forEach((entry, index) => {
-    const li = document.createElement("li");
-    li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
-    if (entry.name === playerName && entry.score === finalScore) {
-      li.style.fontWeight = "bold";
-      li.style.color = "blue";
-    }
-    scoresList.appendChild(li);
-  });
+    leaderboard.forEach((entry, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+      if (entry.name === playerName && entry.score === finalScore) {
+        li.style.fontWeight = "bold";
+        li.style.color = "blue";
+      }
+      scoresList.appendChild(li);
+    });
+
+  } catch (err) {
+    console.error("Error loading leaderboard:", err);
+  }
 }
+
