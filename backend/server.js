@@ -4,12 +4,22 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config(); // for your DB_URI in .env
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+// Create http server and socket.io server
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: 'https://93ak.github.io',
+    methods: ['GET', 'POST']
+  }
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public")); // serve your HTML/CSS/JS
 
 // --- MongoDB setup ---
-const uri = process.env.DB_URI; // put your MongoDB URI in .env
+const uri = process.env.MONGO_URI || 'mongodb+srv://akshara:DB1234@cluster0.gbsvtmq.mongodb.net/fbleaderboard?retryWrites=true&w=majority&appName=Cluster0';
 const client = new MongoClient(uri, {
   serverApi: ServerApiVersion.v1,
 });
@@ -68,5 +78,5 @@ app.get("/api/leaderboard", async (req, res) => {
 });
 
 // --- start server ---
-const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
