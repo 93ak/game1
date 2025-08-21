@@ -1,6 +1,3 @@
-
-const BACKEND_URL = "https://game1-3i6i.onrender.com";
-
 // --- DOM references ---
 const nameScreen = document.getElementById("nameScreen");
 const canvas = document.getElementById("myCanvas");
@@ -13,14 +10,11 @@ const personalBestDiv = document.getElementById("personalBest");
 
 let playerName = localStorage.getItem("playerName") || null;
 
-// pre-fill input if playerName exists
 if (playerName) {
-  nameInput.value = playerName; // ✅ pre-fill input
-  nameScreen.style.display = "none"; // hide name screen
-  canvas.style.display = "block";    // show canvas
-  startGame();                        // start game immediately
+  nameScreen.style.display = "none";
+  canvas.style.display = "block";
+  startGame();
 }
-
 
 // --- check if name exists on server ---
 async function isNameTaken(name) {
