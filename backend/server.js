@@ -1,8 +1,9 @@
-const http = require("http"); // add this
+const http = require("http");
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require("mongodb");
-require("dotenv").config(); // for your DB_URI in .env
+const { Server } = require("socket.io"); // <-- add this
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
