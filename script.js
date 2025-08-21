@@ -1,3 +1,4 @@
+
 let playerName = localStorage.getItem("playerName") || null;
 
 const BACKEND_URL = "https://game1-3i6i.onrender.com";
@@ -57,6 +58,31 @@ startBtn.addEventListener("click", async () => {
   startGame();
 });
 
+// --- show leaderboard after death ---
+async function showLeaderboard(finalScore) {
+  if (!playerName) return;
+
+  await submitScore(playerName, finalScore);
+  const leaderboard = await getLeaderboard();
+
+  leaderboardDiv.style.display = "block";
+  scoresList.innerHTML = "";
+
+  leaderboard.forEach((entry, index) => {
+    const li = document.createElement("li");
+    li.textContent = `${index + 1}. ${entry.name}: ${entry.score}`;
+    if (entry.name === playerName && entry.score === finalScore) {
+      li.style.fontWeight = "bold";
+      li.style.color = "blue";
+    }
+    scoresList.appendChild(li);
+  });
+
+  const myScore = leaderboard.find((e) => e.name === playerName);
+  if (myScore) {
+    personalBestDiv.textContent = `⭐ ${myScore.name}: ${myScore.score}`;
+  }
+}
 
 function startGame() {
   console.log("Starting game for:", playerName);
