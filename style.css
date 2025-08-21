@@ -1,0 +1,65 @@
+body {
+  font-family: "Pacifico";
+  margin: 0;
+  background: #f0f0f0;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap; /* allows stacking on smaller screens */
+  justify-content: center;
+}
+
+canvas {
+  border: 2px solid #0a3cda;
+  margin: 10px;
+  max-width: 100%;  /* shrink to fit on mobile */
+  height: auto;
+}
+
+#leaderboard {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  width: 200px;
+  font-family: Arial, sans-serif;
+  flex-shrink: 0;
+}
+
+#leaderboard h2 {
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+#scoresList {
+  padding-left: 20px;
+  margin: 0 0 10px;
+}
+
+#personalBest {
+  text-align: center;
+  font-weight: bold;
+  color: #0a3cda;
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column; /* stack vertically */
+    align-items: center;
+  }
+
+  #leaderboard {
+    width: 90%;
+  }
+
+  canvas {
+    width: 100%;
+    height: auto;
+  }
+}

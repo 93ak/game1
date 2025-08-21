@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flappy Bird</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Pacifico"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="https://i.ibb.co/M6KTWnf/pic.jpg" />
+  </head>
+  <body>
+    <div class="container">
+        <!-- Game -->
+        <canvas
+        id="myCanvas"
+        width="620"
+        height="480"
+        style="
+            background: url('http://s2js.com/img/etc/flappyback.png');
+            background-size: 100%;
+            height: 95%;
+        "
+        ></canvas>
+
+        <!-- Leaderboard -->
+        <div id="leaderboard">
+        <h2>🏆 Top Scores</h2>
+        <ol id="scoresList"></ol>
+        <div id="personalBest"></div>
+        </div>
+        <script>
+            function loadLeaderboard() {
+            // Hardcoded sample data
+            const data = {
+                leaderboard: [
+                { name: "Alice", score: 42 },
+                { name: "Bob", score: 37 },
+                { name: "Charlie", score: 33 },
+                { name: "Dana", score: 30 },
+                { name: "Eve", score: 28 },
+                { name: "Frank", score: 25 },
+                { name: "Grace", score: 22 },
+                { name: "Heidi", score: 20 },
+                { name: "Ivan", score: 18 },
+                { name: "Judy", score: 15 }
+                ],
+                personalBest: { name: "You", score: 27 }
+            };
+
+            const scoresList = document.getElementById("scoresList");
+            scoresList.innerHTML = "";
+
+            data.leaderboard.slice(0, 10).forEach((entry) => {
+                const li = document.createElement("li");
+                li.textContent = `${entry.name}: ${entry.score}`;
+                scoresList.appendChild(li);
+            });
+
+            const pb = document.getElementById("personalBest");
+            if (data.personalBest) {
+                pb.textContent = `⭐ ${data.personalBest.name}'s Best: ${data.personalBest.score}`;
+            } else {
+                pb.textContent = "";
+            }
+            }
+
+            document.addEventListener("DOMContentLoaded", loadLeaderboard);
+        </script>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
